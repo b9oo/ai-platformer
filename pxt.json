@@ -1,0 +1,16 @@
+{
+    "name": "arcade-parkour-ai",
+    "version": "1.0.0",
+    "description": "Adds Parkour AI to sprites for platformer games in MakeCode Arcade.",
+    "license": "MIT",
+    "dependencies": {
+        "core": "*"
+    },
+    "files": [
+        "main.ts"
+    ],
+    "targetVersions": {
+        "target": "arcade",
+        "pxt": "8.0.0"
+    }
+}
