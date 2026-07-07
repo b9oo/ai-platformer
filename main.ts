@@ -27,14 +27,14 @@ namespace ParkourAI {
             const tx = this.getTargetX();
             const dx = tx - this.sprite.x;
 
-            // Horizontal movement toward target
+            // Horizontal movement
             if (Math.abs(dx) > 5) {
                 this.sprite.vx = this.moveSpeed * Math.sign(dx);
             } else {
                 this.sprite.vx = 0;
             }
 
-            // Parkour jump logic
+            // Parkour logic: Jump decisions
             if (this.shouldJump()) {
                 this.sprite.vy = -this.jumpPower;
             }
@@ -50,7 +50,7 @@ namespace ParkourAI {
         }
 
         private shouldJump(): boolean {
-            if (this.sprite.vy < -10) return false; // already jumping upward
+            if (this.sprite.vy < -10) return false; // already jumping
 
             const dir = Math.sign(this.sprite.vx || 1);
             const aheadX = this.sprite.x + dir * 18;
@@ -70,8 +70,8 @@ namespace ParkourAI {
             const col = Math.floor(x / 16);
             const row = Math.floor(y / 16);
             const tile = tiles.getTileAt(col, row);
-            // Solid if tile exists and is not transparent/empty
-            return tile && (tile as any) !== 0;
+            // Fixed: proper check for solid tiles (handles Image or number tiles)
+            return tile != null && (typeof tile === "number" ? tile !== 0 : true);
         }
     }
 
