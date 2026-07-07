@@ -58,8 +58,8 @@ namespace ParkourAI {
             const gapAhead = !this.isSolidAt(aheadX, feetY + 8);
             const landingPlatform = this.isSolidAt(aheadX + dir * 10, feetY - 25);
 
-            return (wallAhead || gapAhead) && landingPlatform && 
-                   this.sprite.isHittingTile(CollisionDirection.Bottom);
+            return (wallAhead || gapAhead) && landingPlatform &&
+                this.sprite.isHittingTile(CollisionDirection.Bottom);
         }
 
         private isSolidAt(x: number, y: number): boolean {
@@ -67,8 +67,10 @@ namespace ParkourAI {
             const col = Math.floor(x / 16);
             const row = Math.floor(y / 16);
             const tile = tiles.getTileAt(col, row);
-            // Fixed tile check for MakeCode
-            return tile != null && !(tile === 0);
+            // Super safe check
+            if (tile == null) return false;
+            if (typeof tile === "number") return tile !== 0;
+            return true;
         }
     }
 
@@ -89,25 +91,35 @@ namespace ParkourAI {
     //% power.defl=200
     //% group="AI Settings"
     export function setAIJumpPower(sprite: Sprite, power: number) {
-        const agent = agents.find(a => a && a.sprite === sprite);
-        if (agent) agent.setJumpPower(power);
+        for (let i = 0; i < agents.length; i++) {
+            if (agents[i] && agents[i].sprite === sprite) {
+                agents[i].setJumpPower(power);
+                return;
+            }
+        }
     }
 
     //% block="set AI move speed for $sprite to $speed"
     //% speed.defl=80
     //% group="AI Settings"
     export function setAIMoveSpeed(sprite: Sprite, speed: number) {
-        const agent = agents.find(a => a && a.sprite === sprite);
-        if (agent) agent.setMoveSpeed(speed);
+        for (let i = 0; i < agents.length; i++) {
+            if (agents[i] && agents[i].sprite === sprite) {
+                agents[i].setMoveSpeed(speed);
+                return;
+            }
+        }
     }
 
     //% block="disable parkour AI on $sprite"
     //% group="AI Control"
     export function disableParkourAI(sprite: Sprite) {
-        const idx = agents.findIndex(a => a && a.sprite === sprite);
-        if (idx >= 0) {
-            agents[idx].active = false;
-            agents.removeAt(idx);
+        for (let i = agents.length - 1; i >= 0; i--) {
+            if (agents[i] && agents[i].sprite === sprite) {
+                agents[i].active = false;
+                agents.removeAt(i);
+                return;
+            }
         }
     }
 }
